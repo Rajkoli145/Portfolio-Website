@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="home-container">
+        <header>
+            <nav class="navbar">
+                <div class="logo">
+                    <a href="index.html">Portfolio.</a>
+                </div>
+                <input type="checkbox" id="nav-toggle" class="nav-toggle">
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="skills.html">Skills</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+                <label for="nav-toggle" class="nav-toggle-label">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+            </nav>
+        </header>
+
+        <main class="contact-section">
+            <div class="contact-content">
+                <h1>Get In Touch</h1>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="contact-text">
+                            <p>I'm always interested in hearing about new projects and opportunities. Feel free to reach out if you want to connect!</p>
+                        </div>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="item-info">
+                                    <h3>Email</h3>
+                                    <a href="mailto:koliraj911@gmail.com?subject=Portfolio Contact" class="contact-link" target="_blank">koliraj911@gmail.com</a>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <div class="item-info">
+                                    <h3>Phone</h3>
+                                    <a href="tel:+919619564351" class="contact-link">+91 9619564351</a>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="item-info">
+                                    <h3>Location</h3>
+                                    <a href="https://maps.google.com/?q=Mumbai,Maharashtra" target="_blank" class="contact-link">Mumbai, Maharashtra</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="social-links">
+                            <a href="https://github.com/Rajkoli145" class="social-icon"><i class="fab fa-github"></i></a>
+                            <a href="" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://x.com/koli_raj57974" class="social-icon"><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.linkedin.com/in/raj-koli-626008318/" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="contact-form">
+                        <form id="contactForm" onsubmit="handleSubmit(event)">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" required>
+                                <label for="name">Your Name</label>
+                                <div class="line"></div>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" required>
+                                <label for="email">Your Email</label>
+                                <div class="line"></div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="subject" name="subject" required>
+                                <label for="subject">Subject</label>
+                                <div class="line"></div>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" name="message" required></textarea>
+                                <label for="message">Your Message</label>
+                                <div class="line"></div>
+                            </div>
+                            <button type="submit" class="btn primary-btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/contact.js"></script>
+</body>
+</html>

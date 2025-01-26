@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Contact Messages</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .messages-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .message-card {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #333;
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .message-info span {
+            color: #888;
+            margin-right: 1rem;
+        }
+        .message-content {
+            color: #fff;
+            line-height: 1.6;
+        }
+        .date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+        .no-messages {
+            text-align: center;
+            color: #666;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-container">
+        <header>
+            <nav class="navbar">
+                <div class="logo">
+                    <a href="index.html">Portfolio.</a>
+                </div>
+                <input type="checkbox" id="nav-toggle" class="nav-toggle">
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="skills.html">Skills</a></li>
+                    <li><a href="work.html">Work</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <label for="nav-toggle" class="nav-toggle-label">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </label>
+            </nav>
+        </header>
+
+        <main class="messages-container">
+            <h1>Contact Messages</h1>
+            <button class="refresh-btn" onclick="loadMessages()">Refresh Messages</button>
+            <div id="messages-list"></div>
+        </main>
+    </div>
+
+    <script>
+        // API URL based on environment
+        const API_URL = window.location.hostname === 'rajkoli145.github.io' 
+            ? 'https://portfolio1-b7i9.onrender.com'  // Replace with your actual deployed backend URL
+            : 'http://localhost:3000';
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        async function loadMessages() {
+            try {
+                const response = await fetch(`${API_URL}/api/messages`);
+                const messages = await response.json();
+                
+                const messagesContainer = document.getElementById('messages-list');
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = '<div class="no-messages">No messages yet</div>';
+                    return;
+                }
+
+                messagesContainer.innerHTML = messages.map(message => `
+                    <div class="message-card">
+                        <div class="message-header">
+                            <div class="message-info">
+                                <span><strong>Name:</strong> ${message.name}</span>
+                                <span><strong>Email:</strong> ${message.email}</span>
+                            </div>
+                            <div class="date">${formatDate(message.date)}</div>
+                        </div>
+                        <div class="message-content">
+                            <p><strong>Subject:</strong> ${message.subject}</p>
+                            <p><strong>Message:</strong> ${message.message}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                document.getElementById('messages-list').innerHTML = 
+                    '<div class="no-messages">Error loading messages. Please try again.</div>';
+            }
+        }
+
+        // Load messages when page loads
+        loadMessages();
+    </script>
+</body>
+</html>
