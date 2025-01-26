@@ -23,13 +23,18 @@ app.get('/test', (req, res) => {
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio';
 
-mongoose.connect(MONGODB_URI)
-    .then(() => {
-        console.log('Connected to MongoDB Atlas successfully');
-    })
-    .catch((err) => {
-        console.error('MongoDB connection error:', err);
-    });
+mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+})
+.then(() => {
+    console.log('Connected to MongoDB Atlas successfully');
+})
+.catch((err) => {
+    console.error('MongoDB connection error:', err);
+});
 
 // Handle MongoDB connection events
 mongoose.connection.on('error', err => {
