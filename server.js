@@ -7,7 +7,11 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors()); // Allow all origins during development
+app.use(cors({
+    origin: ['https://rajkoli145.github.io', 'http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.static(__dirname)); // Serve files from root directory
 
