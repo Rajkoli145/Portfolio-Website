@@ -23,16 +23,26 @@ app.get('/test', (req, res) => {
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/portfolio';
 
+// MongoDB connection options
+const mongooseOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 60000,
+    socketTimeoutMS: 45000,
+    connectTimeoutMS: 60000,
+    keepAlive: true,
+    keepAliveInitialDelay: 300000
+};
+
 // Connect to MongoDB with retries
 const connectWithRetry = async () => {
     try {
-        await mongoose.connect(MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 30000,
-            socketTimeoutMS: 45000,
-            connectTimeoutMS: 30000,
-        });
+        if (mongoose.connection.readyState === 1) {
+            console.log('Already connected to MongoDB');
+            return;
+        }
+        
+        await mongoose.connect(MONGODB_URI, mongooseOptions);
         console.log('Connected to MongoDB Atlas successfully');
     } catch (err) {
         console.error('MongoDB connection error:', err);
@@ -41,6 +51,7 @@ const connectWithRetry = async () => {
     }
 };
 
+// Initial connection
 connectWithRetry();
 
 // Handle MongoDB connection events
