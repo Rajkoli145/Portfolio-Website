@@ -202,7 +202,10 @@ body {
     font-size: 1.1rem;
     max-width: 600px;
 }
-
+.btn.primary-btn {
+    background-color: blue;
+    box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #00e5ff;
+}
 .cta-buttons {
     display: flex;
     gap: 1.5rem;
