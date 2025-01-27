@@ -561,8 +561,7 @@ section {
     font-size: 3rem;
     color: var(--primary-color);
     margin-bottom: 2rem;
-    text-shadow: 0 0 5px var(--primary-color),
-                 0 0 10px var(--primary-color);
+    text-shadow: 0 0 3px var(--primary-color);
 }
 
 .about-text {
@@ -593,6 +592,7 @@ section {
     font-size: 2rem;
     color: var(--text-color);
     margin-bottom: 2rem;
+    text-shadow: 0 0 2px var(--primary-color);
 }
 
 .skills-grid {
