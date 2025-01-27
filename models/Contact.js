@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const contactSchema = new mongoose.Schema({
+const ContactSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -17,10 +17,10 @@ const contactSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
+    timestamp: {
         type: Date,
         default: Date.now
     }
 });
 
-module.exports = mongoose.model('Contact', contactSchema);
+module.exports = mongoose.model('Contact', ContactSchema);

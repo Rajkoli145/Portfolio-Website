@@ -70,24 +70,24 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfPaDX0-pc7T8B0G1Wgfko6zMweA7k71iFBi1xJ4-P4jS6JwA/formResponse" method="POST">
+                        <form id="contactForm">
                             <div class="form-group">
-                                <input type="text" id="name" name="entry.1583927566" required>
+                                <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="email" id="email" name="entry.1583927567" required>
+                                <input type="email" id="email" name="email" required>
                                 <label for="email">Your Email</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="text" id="subject" name="entry.1583927568" required>
+                                <input type="text" id="subject" name="subject" required>
                                 <label for="subject">Subject</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <textarea id="message" name="entry.1583927569" required></textarea>
+                                <textarea id="message" name="message" required></textarea>
                                 <label for="message">Your Message</label>
                                 <div class="line"></div>
                             </div>
@@ -99,6 +99,10 @@
         </main>
     </div>
     <script>
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:3000/api/messages'
+            : 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/messages';
+
         const form = document.getElementById('contactForm');
         const submitButton = form.querySelector('button[type="submit"]');
 
@@ -109,11 +113,22 @@
 
             try {
                 const formData = new FormData(form);
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: formData
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
                 });
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send message');
+                }
 
                 alert('Message sent successfully!');
                 form.reset();
