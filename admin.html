@@ -17,6 +17,7 @@
             padding: 1.5rem;
             margin-bottom: 1rem;
             border: 1px solid #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         .message-header {
             display: flex;
@@ -36,21 +37,35 @@
             font-size: 0.9rem;
         }
         .refresh-btn {
-            background: #007bff;
-            color: white;
+            background: #00ffff;
+            color: black;
             border: none;
             padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
             margin-bottom: 1rem;
+            font-weight: bold;
         }
         .refresh-btn:hover {
-            background: #0056b3;
+            background: #00cccc;
         }
         .no-messages {
             text-align: center;
             color: #666;
             padding: 2rem;
+        }
+        .loading {
+            text-align: center;
+            color: #00ffff;
+            padding: 2rem;
+        }
+        .error {
+            color: #ff4444;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 68, 68, 0.1);
+            border-radius: 4px;
+            margin: 1rem 0;
         }
     </style>
 </head>
@@ -85,46 +100,66 @@
     </div>
 
     <script>
-        // API URL based on environment
-        const API_URL = window.location.hostname === 'rajkoli145.github.io' 
-            ? 'https://portfolio1-b7i9.onrender.com'  // Replace with your actual deployed backend URL
-            : 'http://localhost:3000';
+        const SHEET_ID = '1uhTjD47zeJRMFL0RWrsQnIZ_TpI9NQFKkBnKUHpoSEw';
+        const API_KEY = 'AIzaSyBHWxj9kj1fCT5yVhBqxvWJZwZsQkj_eP4';
+        const RANGE = 'Form Responses 1!A2:E';
 
         function formatDate(dateString) {
             const date = new Date(dateString);
-            return date.toLocaleString();
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
 
         async function loadMessages() {
+            const messagesList = document.getElementById('messages-list');
+            messagesList.innerHTML = '<div class="loading">Loading messages...</div>';
+
             try {
-                const response = await fetch(`${API_URL}/api/messages`);
-                const messages = await response.json();
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
+                );
                 
-                const messagesContainer = document.getElementById('messages-list');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch messages');
+                }
+
+                const data = await response.json();
+                const messages = data.values || [];
+
                 if (messages.length === 0) {
-                    messagesContainer.innerHTML = '<div class="no-messages">No messages yet</div>';
+                    messagesList.innerHTML = '<div class="no-messages">No messages yet</div>';
                     return;
                 }
 
-                messagesContainer.innerHTML = messages.map(message => `
+                messagesList.innerHTML = messages.reverse().map(([timestamp, name, email, subject, message]) => `
                     <div class="message-card">
                         <div class="message-header">
                             <div class="message-info">
-                                <span><strong>Name:</strong> ${message.name}</span>
-                                <span><strong>Email:</strong> ${message.email}</span>
+                                <span><strong>${name}</strong></span>
+                                <span>${email}</span>
                             </div>
-                            <div class="date">${formatDate(message.date)}</div>
+                            <div class="date">${formatDate(timestamp)}</div>
                         </div>
                         <div class="message-content">
-                            <p><strong>Subject:</strong> ${message.subject}</p>
-                            <p><strong>Message:</strong> ${message.message}</p>
+                            <h3>${subject}</h3>
+                            <p>${message}</p>
                         </div>
                     </div>
                 `).join('');
             } catch (error) {
-                console.error('Error loading messages:', error);
-                document.getElementById('messages-list').innerHTML = 
-                    '<div class="no-messages">Error loading messages. Please try again.</div>';
+                console.error('Error:', error);
+                messagesList.innerHTML = `
+                    <div class="error">
+                        Failed to load messages. Please try again.
+                        <br>
+                        <small>${error.message}</small>
+                    </div>
+                `;
             }
         }
 
