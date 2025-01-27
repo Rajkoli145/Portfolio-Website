@@ -17,53 +17,23 @@ async function handleSubmit(event) {
     submitButton.disabled = true;
     submitButton.textContent = 'Sending...';
     
-    const formData = new FormData(form);
-    const formObject = {};
-    
-    formData.forEach((value, key) => {
-        formObject[key] = value;
-    });
-    
-    const apiEndpoint = API_URL ? `${API_URL}/api/contact` : '/api/contact';
-    console.log('Sending form data to:', apiEndpoint);
-    console.log('Form data:', formObject);
-    
     try {
-        const response = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(formObject),
-            mode: 'cors',
-            credentials: 'omit'
+        const formData = new FormData(form);
+        const formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
         });
-
-        console.log('Response status:', response.status);
-        console.log('Response headers:', [...response.headers.entries()]);
         
-        const responseData = await response.text();
-        console.log('Raw response:', responseData);
+        console.log('Submitting form data:', formObject);
         
-        if (response.ok) {
-            let result;
-            try {
-                result = JSON.parse(responseData);
-            } catch (e) {
-                console.warn('Could not parse response as JSON:', e);
-                result = { message: 'Message sent successfully!' };
-            }
-            console.log('Response data:', result);
-            alert('Message sent successfully!');
-            form.reset();
-        } else {
-            console.error('Server error:', responseData);
-            throw new Error('Failed to send message. Please try again.');
-        }
+        const result = await window.API.submitContactForm(formObject);
+        console.log('Submission successful:', result);
+        
+        alert('Message sent successfully!');
+        form.reset();
     } catch (error) {
-        console.error('Error details:', error);
-        alert(error.message || 'Error sending message. Please try again.');
+        console.error('Submission failed:', error);
+        alert('Failed to send message. Please try again.');
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = 'Send Message';
