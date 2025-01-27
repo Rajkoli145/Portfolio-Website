@@ -7,6 +7,21 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .form-group.error .error-message {
+            display: block;
+        }
+        .form-group.error input,
+        .form-group.error textarea {
+            border-color: #ff4444;
+        }
+    </style>
 </head>
 <body>
     <div class="home-container">
@@ -75,21 +90,25 @@
                                 <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
                                 <div class="line"></div>
+                                <div class="error-message" id="nameError"></div>
                             </div>
                             <div class="form-group">
                                 <input type="email" id="email" name="email" required>
                                 <label for="email">Your Email</label>
                                 <div class="line"></div>
+                                <div class="error-message" id="emailError"></div>
                             </div>
                             <div class="form-group">
                                 <input type="text" id="subject" name="subject" required>
                                 <label for="subject">Subject</label>
                                 <div class="line"></div>
+                                <div class="error-message" id="subjectError"></div>
                             </div>
                             <div class="form-group">
                                 <textarea id="message" name="message" required></textarea>
                                 <label for="message">Your Message</label>
                                 <div class="line"></div>
+                                <div class="error-message" id="messageError"></div>
                             </div>
                             <button type="submit">Send Message</button>
                         </form>
@@ -106,8 +125,27 @@
         const form = document.getElementById('contactForm');
         const submitButton = form.querySelector('button[type="submit"]');
 
+        // Clear error states
+        function clearErrors() {
+            const errorElements = form.querySelectorAll('.error-message');
+            const formGroups = form.querySelectorAll('.form-group');
+            errorElements.forEach(el => el.textContent = '');
+            formGroups.forEach(group => group.classList.remove('error'));
+        }
+
+        // Show error message for a field
+        function showError(fieldName, message) {
+            const errorElement = document.getElementById(`${fieldName}Error`);
+            const formGroup = document.getElementById(fieldName).closest('.form-group');
+            if (errorElement && formGroup) {
+                errorElement.textContent = message;
+                formGroup.classList.add('error');
+            }
+        }
+
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            clearErrors();
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
 
@@ -115,7 +153,7 @@
                 const formData = new FormData(form);
                 const data = {};
                 formData.forEach((value, key) => {
-                    data[key] = value;
+                    data[key] = value.trim();
                 });
 
                 const response = await fetch(API_URL, {
@@ -130,14 +168,28 @@
                 const result = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(result.message || 'Failed to send message');
+                    if (response.status === 400 && result.details) {
+                        // Show validation errors
+                        Object.entries(result.details).forEach(([field, message]) => {
+                            if (message) {
+                                showError(field, message);
+                            }
+                        });
+                        throw new Error('Please fix the errors in the form');
+                    } else {
+                        throw new Error(result.message || 'Failed to send message');
+                    }
                 }
 
                 alert('Message sent successfully!');
                 form.reset();
+                clearErrors();
             } catch (error) {
                 console.error('Error:', error);
-                alert(error.message || 'Failed to send message. Please try again.');
+                if (!document.querySelector('.form-group.error')) {
+                    // Only show alert if no field-specific errors are shown
+                    alert(error.message || 'Failed to send message. Please try again.');
+                }
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Send Message';

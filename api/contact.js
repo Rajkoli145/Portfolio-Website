@@ -1,30 +1,30 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // MongoDB Contact Schema
 const contactSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    subject: String,
-    message: String,
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    subject: { type: String, required: true },
+    message: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });
 
-let Contact;
-try {
-    Contact = mongoose.model('Contact');
-} catch {
-    Contact = mongoose.model('Contact', contactSchema);
-}
+// Use mongoose.models to check if the model exists
+const Contact = mongoose.models.Contact || mongoose.model('Contact', contactSchema);
 
 // Connect to MongoDB
 async function connectDB() {
     if (mongoose.connections[0].readyState) return;
+    
+    if (!process.env.MONGODB_URI) {
+        throw new Error('MONGODB_URI is not defined in environment variables');
+    }
+
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log('Connected to MongoDB');
     } catch (error) {
         console.error('MongoDB connection error:', error);
@@ -51,22 +51,50 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Validate request body
+        const { name, email, subject, message } = req.body;
+        
+        if (!name || !email || !subject || !message) {
+            return res.status(400).json({ 
+                message: 'Missing required fields',
+                details: {
+                    name: !name ? 'Name is required' : null,
+                    email: !email ? 'Email is required' : null,
+                    subject: !subject ? 'Subject is required' : null,
+                    message: !message ? 'Message is required' : null
+                }
+            });
+        }
+
         // Connect to database
         await connectDB();
 
-        // Log request data
-        console.log('Received contact form submission');
-        console.log('Headers:', req.headers);
-        console.log('Body:', req.body);
-
         // Create and save contact
-        const contact = new Contact(req.body);
+        const contact = new Contact({
+            name,
+            email,
+            subject,
+            message
+        });
+
         await contact.save();
 
         // Send success response
         res.status(200).json({ message: 'Message sent successfully!' });
     } catch (error) {
         console.error('Error processing request:', error);
-        res.status(500).json({ message: 'Error sending message', error: error.message });
+        
+        // Send appropriate error response
+        if (error.name === 'ValidationError') {
+            res.status(400).json({ 
+                message: 'Validation error', 
+                details: error.errors 
+            });
+        } else {
+            res.status(500).json({ 
+                message: 'Error sending message', 
+                error: error.message 
+            });
+        }
     }
 }
