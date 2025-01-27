@@ -3,168 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Contact Messages</title>
+    <title>Admin Dashboard - Messages</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #00ADB5;
+            --secondary-color: #393E46;
+            --bg-color: #222831;
+            --text-color: #EEEEEE;
+            --card-bg: #2d333b;
+            --hover-color: #00c2cc;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-header {
+            background: var(--secondary-color);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
         .messages-container {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 20px auto;
+            padding: 20px;
         }
+
         .message-card {
-            background: #1a1a1a;
-            border-radius: 8px;
+            background: var(--card-bg);
+            border-radius: 15px;
             padding: 1.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #333;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+
+        .message-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
         .message-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .message-info span {
+
+        .message-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .message-date {
             color: #888;
-            margin-right: 1rem;
-        }
-        .message-content {
-            color: #fff;
-            line-height: 1.6;
-        }
-        .date {
-            color: #666;
             font-size: 0.9rem;
         }
+
+        .message-email {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .message-email i {
+            margin-right: 0.5rem;
+        }
+
+        .message-subject {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+
+        .message-content {
+            color: #ccc;
+            line-height: 1.6;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
         .refresh-btn {
-            background: #00ffff;
-            color: black;
+            background: var(--primary-color);
+            color: var(--text-color);
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-bottom: 1rem;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
         }
+
         .refresh-btn:hover {
-            background: #00cccc;
+            background: var(--hover-color);
+            transform: translateY(-2px);
         }
+
+        .refresh-btn i {
+            font-size: 1.1rem;
+        }
+
         .no-messages {
             text-align: center;
-            color: #666;
-            padding: 2rem;
+            padding: 3rem;
+            color: #888;
+            background: var(--card-bg);
+            border-radius: 10px;
+            margin-top: 2rem;
         }
-        .loading {
-            text-align: center;
-            color: #00ffff;
-            padding: 2rem;
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
         }
-        .error {
-            color: #ff4444;
-            text-align: center;
-            padding: 1rem;
-            background: rgba(255, 68, 68, 0.1);
-            border-radius: 4px;
-            margin: 1rem 0;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+
+            .messages-container {
+                padding: 10px;
+            }
+
+            .message-card {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="home-container">
-        <header>
-            <nav class="navbar">
-                <div class="logo">
-                    <a href="index.html">Portfolio.</a>
-                </div>
-                <input type="checkbox" id="nav-toggle" class="nav-toggle">
-                <ul class="nav-menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="skills.html">Skills</a></li>
-                    <li><a href="work.html">Work</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-                <label for="nav-toggle" class="nav-toggle-label">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </label>
-            </nav>
-        </header>
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="skills.html">Skills</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">Contact</a>
+            <a href="admin.html" class="active">Admin</a>
+        </nav>
+    </header>
 
-        <main class="messages-container">
-            <h1>Contact Messages</h1>
-            <button class="refresh-btn" onclick="loadMessages()">Refresh Messages</button>
-            <div id="messages-list"></div>
-        </main>
+    <div class="dashboard-header">
+        <h1>Messages Dashboard</h1>
     </div>
 
-    <script>
-        const SHEET_ID = '1uhTjD47zeJRMFL0RWrsQnIZ_TpI9NQFKkBnKUHpoSEw';
-        const API_KEY = 'AIzaSyBHWxj9kj1fCT5yVhBqxvWJZwZsQkj_eP4';
-        const RANGE = 'Form Responses 1!A2:E';
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <i class="fas fa-envelope"></i>
+            <div class="stat-number" id="total-messages">-</div>
+            <div class="stat-label">Total Messages</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-clock"></i>
+            <div class="stat-number" id="recent-messages">-</div>
+            <div class="stat-label">Recent Messages</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-calendar"></i>
+            <div class="stat-number" id="today-messages">-</div>
+            <div class="stat-label">Today's Messages</div>
+        </div>
+    </div>
 
+    <main class="messages-container">
+        <button class="refresh-btn" onclick="loadMessages()">
+            <i class="fas fa-sync-alt"></i> Refresh Messages
+        </button>
+        <div id="messages-list">
+            <div class="no-messages">
+                <div class="loading-spinner"></div>
+                Loading messages...
+            </div>
+        </div>
+    </main>
+
+    <script>
         function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'long',
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit'
-            });
+            };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        }
+
+        function updateStats(messages) {
+            const total = messages.length;
+            const recent = messages.filter(m => {
+                const date = new Date(m.createdAt);
+                const now = new Date();
+                const hoursDiff = (now - date) / (1000 * 60 * 60);
+                return hoursDiff <= 24;
+            }).length;
+            
+            const today = messages.filter(m => {
+                const date = new Date(m.createdAt);
+                const now = new Date();
+                return date.toDateString() === now.toDateString();
+            }).length;
+
+            document.getElementById('total-messages').textContent = total;
+            document.getElementById('recent-messages').textContent = recent;
+            document.getElementById('today-messages').textContent = today;
+        }
+
+        function createMessageCard(message) {
+            return `
+                <div class="message-card">
+                    <div class="message-header">
+                        <h3><i class="fas fa-user"></i> ${message.name}</h3>
+                        <span class="message-date"><i class="far fa-clock"></i> ${formatDate(message.createdAt)}</span>
+                    </div>
+                    <div class="message-email">
+                        <i class="fas fa-envelope"></i> ${message.email}
+                    </div>
+                    <div class="message-subject">
+                        <i class="fas fa-heading"></i> ${message.subject}
+                    </div>
+                    <div class="message-content">
+                        <i class="fas fa-comment-alt"></i> ${message.message}
+                    </div>
+                </div>
+            `;
         }
 
         async function loadMessages() {
-            const messagesList = document.getElementById('messages-list');
-            messagesList.innerHTML = '<div class="loading">Loading messages...</div>';
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.innerHTML = '<div class="loading-spinner"></div> Loading...';
+            refreshBtn.disabled = true;
 
             try {
-                const response = await fetch(
-                    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
-                );
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch messages');
-                }
-
+                const response = await fetch('/api/messages');
                 const data = await response.json();
-                const messages = data.values || [];
-
-                if (messages.length === 0) {
-                    messagesList.innerHTML = '<div class="no-messages">No messages yet</div>';
+                
+                const messagesContainer = document.getElementById('messages-list');
+                
+                if (data.length === 0) {
+                    messagesContainer.innerHTML = `
+                        <div class="no-messages">
+                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                            <p>No messages found.</p>
+                        </div>`;
                     return;
                 }
 
-                messagesList.innerHTML = messages.reverse().map(([timestamp, name, email, subject, message]) => `
-                    <div class="message-card">
-                        <div class="message-header">
-                            <div class="message-info">
-                                <span><strong>${name}</strong></span>
-                                <span>${email}</span>
-                            </div>
-                            <div class="date">${formatDate(timestamp)}</div>
-                        </div>
-                        <div class="message-content">
-                            <h3>${subject}</h3>
-                            <p>${message}</p>
-                        </div>
-                    </div>
-                `).join('');
+                updateStats(data);
+
+                messagesContainer.innerHTML = data
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .map(createMessageCard)
+                    .join('');
+                    
             } catch (error) {
-                console.error('Error:', error);
-                messagesList.innerHTML = `
-                    <div class="error">
-                        Failed to load messages. Please try again.
-                        <br>
-                        <small>${error.message}</small>
-                    </div>
-                `;
+                console.error('Error loading messages:', error);
+                document.getElementById('messages-list').innerHTML = `
+                    <div class="no-messages">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: #ff4444;"></i>
+                        <p>Error loading messages. Please try again.</p>
+                    </div>`;
+            } finally {
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Messages';
+                refreshBtn.disabled = false;
             }
         }
 
         // Load messages when page loads
         loadMessages();
+
+        // Refresh messages every 30 seconds
+        setInterval(loadMessages, 30000);
     </script>
 </body>
 </html>

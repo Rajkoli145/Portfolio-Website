@@ -6,12 +6,6 @@ const dotenv = require('dotenv');
 // Load environment variables
 dotenv.config();
 
-// Check if MongoDB URI is set
-if (!process.env.MONGODB_URI) {
-    console.error('MONGODB_URI is not set in .env file');
-    process.exit(1);
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -25,21 +19,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// Use local MongoDB instead of Atlas
+const MONGODB_URI = 'mongodb://127.0.0.1:27017/portfolio';
+
 // MongoDB Connection with retry logic
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
+        await mongoose.connect(MONGODB_URI, {
             useNewUrlParser: true,
-            useUnifiedTopology: true,
-            connectTimeoutMS: 30000, // 30 seconds
-            socketTimeoutMS: 30000, // 30 seconds
-            serverSelectionTimeoutMS: 30000, // 30 seconds
-            heartbeatFrequencyMS: 1000, // Check server status every second
-            maxPoolSize: 10,
-            minPoolSize: 1,
-            maxIdleTimeMS: 30000,
-            retryWrites: true,
-            w: 'majority'
+            useUnifiedTopology: true
         });
         console.log('Successfully connected to MongoDB');
 
@@ -70,7 +58,7 @@ const contactSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 }, { 
     timestamps: true,
-    collection: 'contacts' // Explicitly set collection name
+    collection: 'contacts'
 });
 
 // Initialize Contact model
@@ -86,6 +74,29 @@ connectDB().then(() => {
     // Routes
     app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, 'index.html'));
+    });
+
+    // Get all messages endpoint
+    app.get('/api/messages', async (req, res) => {
+        try {
+            // Check MongoDB connection
+            if (mongoose.connection.readyState !== 1) {
+                throw new Error('Database connection is not ready');
+            }
+
+            const messages = await Contact.find({})
+                .sort({ createdAt: -1 })
+                .select('-__v');
+
+            res.json(messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to fetch messages',
+                error: error.message
+            });
+        }
     });
 
     // Contact form endpoint
@@ -117,16 +128,10 @@ connectDB().then(() => {
                 message
             });
 
-            // Save to database with timeout
+            // Save to database
             console.log('Attempting to save contact:', contact);
-            const savedContact = await Promise.race([
-                contact.save(),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Database operation timed out')), 20000)
-                )
-            ]);
-
-            console.log('Successfully saved contact:', savedContact._id);
+            await contact.save();
+            console.log('Successfully saved contact');
             
             res.status(200).json({
                 success: true,
@@ -155,7 +160,6 @@ connectDB().then(() => {
     // Start server
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
-        console.log('MongoDB URI:', process.env.MONGODB_URI.replace(/:[^:]*@/, ':****@')); // Hide password in logs
     });
 }).catch(err => {
     console.error('Failed to start server:', err);
