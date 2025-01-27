@@ -2,10 +2,10 @@
   "name": "portfolio-website",
   "version": "1.0.0",
   "description": "Portfolio website with contact form",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "start": "vercel start"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -17,7 +17,7 @@
     "mongoose": "^8.0.3"
   },
   "devDependencies": {
-    "netlify-cli": "^18.0.2",
+    "vercel": "^32.5.0",
     "nodemon": "^3.0.2"
   }
 }
