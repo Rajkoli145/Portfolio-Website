@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm" action="https://portfolio-website-jmfub48wy-rajkoli145s-projects.vercel.app/api/contact" method="POST">
+                        <form id="contactForm">
                             <div class="form-group">
                                 <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
@@ -99,6 +99,8 @@
         </main>
     </div>
     <script>
+        const API_URL = 'https://portfolio-website-jmfub48wy-rajkoli145s-projects.vercel.app/api/contact';
+        
         document.getElementById('contactForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
@@ -114,28 +116,25 @@
                     formObject[key] = value;
                 });
                 
-                console.log('Sending form data to:', form.action);
-                console.log('Form data:', formObject);
+                console.log('Submitting form data:', formObject);
                 
-                const response = await fetch(form.action, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(formObject)
                 });
                 
-                console.log('Response status:', response.status);
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    console.log('Success:', result);
-                    alert('Message sent successfully!');
-                    form.reset();
-                } else {
-                    throw new Error('Failed to send message');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                
+                const result = await response.json();
+                console.log('Server response:', result);
+                
+                alert('Message sent successfully!');
+                form.reset();
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to send message. Please try again.');
