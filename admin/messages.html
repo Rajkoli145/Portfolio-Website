@@ -123,17 +123,34 @@
             messagesContainer.innerHTML = '<div class="loading">Loading messages...</div>';
 
             try {
-                const response = await fetch('https://docs.google.com/spreadsheets/d/1uhTjD47zeJRMFL0RWrsQnIZ_TpI9NQFKkBnKUHpoSEw/gviz/tq?tqx=out:json');
-                const text = await response.text();
-                const data = JSON.parse(text.substr(47).slice(0, -2));
+                // Using the published spreadsheet URL
+                const spreadsheetId = '1uhTjD47zeJRMFL0RWrsQnIZ_TpI9NQFKkBnKUHpoSEw';
+                const sheetId = '0'; // First sheet
+                const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetId}&headers=1`;
                 
-                if (data.table.rows.length === 0) {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch messages');
+                }
+                
+                const text = await response.text();
+                // Remove the Google Visualization API prefix and suffix
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonText);
+
+                if (!data.table || !data.table.rows || data.table.rows.length === 0) {
                     messagesContainer.innerHTML = '<div class="no-messages">No messages found</div>';
                     return;
                 }
 
                 const messagesHTML = data.table.rows.map(row => {
-                    const [timestamp, name, email, subject, message] = row.c.map(cell => cell ? cell.v : '');
+                    const cells = row.c || [];
+                    const timestamp = cells[0]?.v || '';
+                    const name = cells[1]?.v || '';
+                    const email = cells[2]?.v || '';
+                    const subject = cells[3]?.v || '';
+                    const message = cells[4]?.v || '';
+
                     return `
                         <div class="message-card">
                             <div class="message-header">
@@ -154,7 +171,11 @@
                 messagesContainer.innerHTML = messagesHTML;
             } catch (error) {
                 console.error('Error loading messages:', error);
-                messagesContainer.innerHTML = '<div class="error">Failed to load messages. Please try again.</div>';
+                messagesContainer.innerHTML = `
+                    <div class="error">
+                        Failed to load messages. Please try again.<br>
+                        Error: ${error.message}
+                    </div>`;
             } finally {
                 refreshBtn.disabled = false;
             }
