@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 const Contact = require('./models/Contact');
 require('dotenv').config();
 
@@ -9,10 +10,14 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: ['https://rajkoli145.github.io', 'http://localhost:3000'],
+    origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI, {
@@ -51,6 +56,11 @@ app.get('/api/messages', async (req, res) => {
 // Test Route
 app.get('/test', (req, res) => {
     res.json({ message: 'API is working!' });
+});
+
+// Catch-all route to serve admin page
+app.get('/admin*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin', 'index.html'));
 });
 
 const port = process.env.PORT || 3000;
