@@ -1,7 +1,6 @@
 // API configuration
 const API_CONFIG = {
-    CONTACT_API: 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/contact',
-    MESSAGES_API: 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/messages'
+    CONTACT_API: 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/contact'
 };
 
 // Contact form API
