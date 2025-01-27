@@ -119,11 +119,9 @@
     </div>
     <script>
         const API_URL = '/api/contact';
-
         const form = document.getElementById('contactForm');
         const submitButton = form.querySelector('button[type="submit"]');
 
-        // Clear error states
         function clearErrors() {
             const errorElements = form.querySelectorAll('.error-message');
             const formGroups = form.querySelectorAll('.form-group');
@@ -131,7 +129,6 @@
             formGroups.forEach(group => group.classList.remove('error'));
         }
 
-        // Show error message for a field
         function showError(fieldName, message) {
             const errorElement = document.getElementById(`${fieldName}Error`);
             const formGroup = document.getElementById(fieldName).closest('.form-group');
@@ -147,47 +144,38 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
 
-            try {
-                const formData = new FormData(form);
-                const data = {};
-                formData.forEach((value, key) => {
-                    data[key] = value.trim();
-                });
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                subject: document.getElementById('subject').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
 
+            try {
+                console.log('Sending request to:', API_URL);
+                console.log('Form data:', formData);
+                
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(formData)
                 });
 
+                console.log('Response status:', response.status);
                 const result = await response.json();
+                console.log('Response data:', result);
 
                 if (!response.ok) {
-                    if (response.status === 400 && result.details) {
-                        // Show validation errors
-                        Object.entries(result.details).forEach(([field, message]) => {
-                            if (message) {
-                                showError(field, message);
-                            }
-                        });
-                        throw new Error('Please fix the errors in the form');
-                    } else {
-                        throw new Error(result.message || 'Failed to send message');
-                    }
+                    throw new Error(result.message || 'Failed to send message');
                 }
 
                 alert('Message sent successfully!');
                 form.reset();
-                clearErrors();
             } catch (error) {
                 console.error('Error:', error);
-                if (!document.querySelector('.form-group.error')) {
-                    // Only show alert if no field-specific errors are shown
-                    alert(error.message || 'Failed to send message. Please try again.');
-                }
+                alert(error.message || 'Failed to send message. Please try again.');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Send Message';
