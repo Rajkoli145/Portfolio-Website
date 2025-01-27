@@ -70,19 +70,19 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm">
+                        <form id="contactForm" action="https://formspree.io/f/xleqbwkr" method="POST">
                             <div class="form-group">
                                 <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="_replyto" required>
                                 <label for="email">Your Email</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="text" id="subject" name="subject" required>
+                                <input type="text" id="subject" name="_subject" required>
                                 <label for="subject">Subject</label>
                                 <div class="line"></div>
                             </div>
@@ -91,6 +91,7 @@
                                 <label for="message">Your Message</label>
                                 <div class="line"></div>
                             </div>
+                            <input type="hidden" name="_next" value="https://rajkoli145.github.io/Portfolio-Website/contact.html">
                             <button type="submit" class="btn primary-btn">Send Message</button>
                         </form>
                     </div>
@@ -99,9 +100,7 @@
         </main>
     </div>
     <script>
-        const FORM_ENDPOINT = "https://formspree.io/f/xleqbwkr";
-        
-        document.getElementById('contactForm').addEventListener('submit', async function(event) {
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
             event.preventDefault();
             
             const form = event.target;
@@ -109,39 +108,29 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
             
-            try {
-                const formData = new FormData(form);
-                const formObject = {};
-                formData.forEach((value, key) => {
-                    formObject[key] = value;
-                });
-                
-                console.log('Submitting form data:', formObject);
-                
-                const response = await fetch(FORM_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                });
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Server error response:', errorText);
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                    form.reset();
+                } else {
                     throw new Error('Failed to send message');
                 }
-                
-                console.log('Server response:', response);
-                alert('Message sent successfully!');
-                form.reset();
-            } catch (error) {
+            })
+            .catch(error => {
                 console.error('Error:', error);
                 alert('Failed to send message. Please try again.');
-            } finally {
+            })
+            .finally(() => {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Send Message';
-            }
+            });
         });
     </script>
 </body>
