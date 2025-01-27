@@ -1064,12 +1064,17 @@ section {
     padding: 5px 10px;
     border-radius: 5px;
     display: inline-block;
+    border: 1px solid transparent;
+    background: none;
+    font-size: inherit;
+    font-family: inherit;
 }
 
 .contact-link.email-link:hover {
     background: rgba(0, 229, 255, 0.1);
     transform: translateY(-2px);
     text-shadow: 0 0 5px var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 /* Responsive adjustments for contact section */
