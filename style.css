@@ -1387,3 +1387,22 @@ footer {
         font-size: 2rem;
     }
 }
+
+.social-links {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2.5rem;
+}
+
+.social-icon {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    color: var(--primary-color);
+    transform: translateY(-3px);
+    text-shadow: var(--neon-shadow);
+}
