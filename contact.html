@@ -181,7 +181,7 @@
         </main>
     </div>
     <script>
-        const API_URL = 'https://portfolio-website-koul4pqw0-rajkoli145s-projects.vercel.app/api/contact';
+        const API_URL = 'https://portfolio-website-ppkl8lirc-rajkoli145s-projects.vercel.app/api/contact';
         const contactForm = document.getElementById('contact-form');
         const submitButton = document.getElementById('submit-button');
         const statusMessage = document.getElementById('status-message');
@@ -216,32 +216,46 @@
             e.preventDefault();
             clearErrors();
 
-            const formData = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                subject: document.getElementById('subject').value.trim(),
-                message: document.getElementById('message').value.trim()
-            };
-
-            // Validate form data
-            if (!formData.name) return showError('name', 'Name is required');
-            if (!formData.email) return showError('email', 'Email is required');
-            if (!formData.subject) return showError('subject', 'Subject is required');
-            if (!formData.message) return showError('message', 'Message is required');
-
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
-
             try {
+                const formData = {
+                    name: document.getElementById('name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    subject: document.getElementById('subject').value.trim(),
+                    message: document.getElementById('message').value.trim()
+                };
+
+                // Validate form data
+                if (!formData.name) return showError('name', 'Name is required');
+                if (!formData.email) return showError('email', 'Email is required');
+                if (!formData.subject) return showError('subject', 'Subject is required');
+                if (!formData.message) return showError('message', 'Message is required');
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+
+                console.log('Sending to:', API_URL);
+                console.log('Data:', formData);
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(formData)
                 });
 
-                const result = await response.json();
+                console.log('Response status:', response.status);
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('Failed to parse response:', e);
+                    throw new Error('Invalid server response');
+                }
 
                 if (!response.ok) {
                     throw new Error(result.message || 'Failed to send message');
