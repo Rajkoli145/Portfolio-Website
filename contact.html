@@ -99,7 +99,7 @@
         </main>
     </div>
     <script>
-        const API_URL = 'https://portfolio-website-api.onrender.com/contact';
+        const API_URL = 'https://portfolio-website-il2dyi6ny-rajkoli145s-projects.vercel.app/api/contact';
         
         document.getElementById('contactForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -128,9 +128,9 @@
                 });
                 
                 if (!response.ok) {
-                    const errorData = await response.text();
-                    console.error('Server error:', errorData);
-                    throw new Error('Network response was not ok');
+                    const errorText = await response.text();
+                    console.error('Server error response:', errorText);
+                    throw new Error('Failed to send message');
                 }
                 
                 const result = await response.json();

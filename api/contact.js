@@ -32,7 +32,7 @@ async function connectDB() {
     }
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -69,4 +69,4 @@ module.exports = async (req, res) => {
         console.error('Error processing request:', error);
         res.status(500).json({ message: 'Error sending message', error: error.message });
     }
-};
+}
