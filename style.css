@@ -203,9 +203,17 @@ body {
     max-width: 600px;
 }
 .btn.primary-btn {
-    background-color: blue;
+    background-color: var(--primary-color);
     box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #00e5ff;
+    color: var(--bg-color);
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 5px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
+
 .cta-buttons {
     display: flex;
     gap: 1.5rem;
@@ -220,17 +228,6 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-}
-
-.btn.primary-btn {
-    background-color: blue;
-    color: var(--bg-color);
-    border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 5px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
 }
 
 .btn.secondary-btn {
@@ -1024,13 +1021,14 @@ section {
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 2rem;
-    background: var(--primary-color);
+    background-color: var(--primary-color);
     color: var(--bg-color);
     border: none;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #00e5ff;
 }
 
 .submit-btn:hover {
