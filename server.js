@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: ['https://rajkoli145.github.io', 'http://localhost:3000'],
+    origin: ['https://rajkoli145.github.io', 'http://localhost:3000', 'https://portfolio-website-rajkoli145.vercel.app'],
     methods: ['GET', 'POST'],
     credentials: true
 }));

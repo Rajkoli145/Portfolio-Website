@@ -1,6 +1,6 @@
 // API URL based on environment
 const API_URL = window.location.hostname.includes('github.io') 
-    ? 'YOUR_VERCEL_URL_HERE'  // We'll update this after deploying to Vercel
+    ? 'https://portfolio-website-rajkoli145.vercel.app'  // Updated to your Vercel URL
     : 'http://localhost:3000';
 
 async function handleSubmit(event) {
