@@ -1,6 +1,6 @@
 // API URL based on environment
 const API_URL = window.location.hostname.includes('github.io') 
-    ? 'https://portfolio-backend-s2ws.onrender.com'  // Updated Render.com backend URL
+    ? 'YOUR_VERCEL_URL_HERE'  // We'll update this after deploying to Vercel
     : 'http://localhost:3000';
 
 async function handleSubmit(event) {
