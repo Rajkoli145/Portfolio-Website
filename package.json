@@ -1,18 +1,20 @@
 {
   "name": "portfolio-website",
   "version": "1.0.0",
-  "description": "Personal Portfolio Website",
-  "main": "server.js",
+  "description": "Personal portfolio website",
+  "main": "index.html",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "serve .",
+    "dev": "serve ."
   },
-  "dependencies": {
-    "express": "^4.18.2",
-    "mongoose": "^8.0.3",
-    "dotenv": "^16.3.1"
-  },
+  "keywords": [
+    "portfolio",
+    "website",
+    "personal"
+  ],
+  "author": "Raj Koli",
+  "license": "MIT",
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "serve": "^14.0.0"
   }
 }
