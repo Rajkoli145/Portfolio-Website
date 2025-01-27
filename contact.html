@@ -44,7 +44,12 @@
                                 <i class="fas fa-envelope"></i>
                                 <div class="item-info">
                                     <h3>Email</h3>
-                                    <a href="#" onclick="openEmail(); return false;" class="contact-link email-link">koliraj911@gmail.com</a>
+                                    <div class="email-container">
+                                        <span class="email-text">koliraj911@gmail.com</span>
+                                        <a href="mailto:koliraj911@gmail.com" class="email-button">
+                                            <i class="fas fa-envelope"></i> Send Email
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="contact-item">
@@ -101,11 +106,6 @@
             </div>
         </main>
     </div>
-    <script>
-        function openEmail() {
-            window.open('mailto:koliraj911@gmail.com', '_self');
-        }
-    </script>
     <script src="js/contact.js"></script>
 </body>
 </html>

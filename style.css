@@ -1077,6 +1077,41 @@ section {
     border-color: var(--primary-color);
 }
 
+.email-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.email-text {
+    color: var(--text-color);
+}
+
+.email-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.email-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.email-button i {
+    font-size: 1rem;
+}
+
 /* Responsive adjustments for contact section */
 @media (max-width: 992px) {
     .contact-grid {
