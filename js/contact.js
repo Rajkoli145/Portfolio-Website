@@ -1,9 +1,12 @@
 // API URL based on environment
-const API_URL = window.location.hostname.includes('github.io') 
-    ? 'https://portfolio-website-oybmzoqyl-rajkoli145s-projects.vercel.app'  // Updated Vercel URL
-    : 'http://localhost:3000';
+const API_URL = window.location.hostname === 'rajkoli145.github.io'
+    ? 'https://portfolio-website-c5bfawwsu-rajkoli145s-projects.vercel.app'  // Production URL
+    : window.location.hostname === 'localhost'
+        ? 'http://localhost:3000'  // Local development
+        : '';  // Default to same origin
 
-console.log('Current API URL:', API_URL);
+console.log('Current hostname:', window.location.hostname);
+console.log('Using API URL:', API_URL);
 
 async function handleSubmit(event) {
     event.preventDefault();
@@ -21,18 +24,20 @@ async function handleSubmit(event) {
         formObject[key] = value;
     });
     
-    console.log('Sending form data to:', `${API_URL}/api/contact`);
+    const apiEndpoint = API_URL ? `${API_URL}/api/contact` : '/api/contact';
+    console.log('Sending form data to:', apiEndpoint);
     console.log('Form data:', formObject);
     
     try {
-        const response = await fetch(`${API_URL}/api/contact`, {
+        const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
             body: JSON.stringify(formObject),
-            mode: 'cors'
+            mode: 'cors',
+            credentials: 'omit'
         });
 
         console.log('Response status:', response.status);

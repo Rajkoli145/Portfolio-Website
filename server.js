@@ -10,16 +10,18 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// CORS middleware
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-    next();
-});
+// CORS middleware with specific origin
+const corsOptions = {
+    origin: ['https://rajkoli145.github.io', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept'],
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -37,8 +39,11 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Contact Form Route
 app.post('/api/contact', async (req, res) => {
+    console.log('Received contact form submission');
+    console.log('Headers:', req.headers);
+    console.log('Body:', req.body);
+    
     try {
-        console.log('Received contact form submission:', req.body);
         const contact = new Contact(req.body);
         await contact.save();
         res.status(200).json({ message: 'Message sent successfully!' });
