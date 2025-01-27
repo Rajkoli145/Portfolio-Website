@@ -7,21 +7,9 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
+// Basic middleware
 app.use(express.json());
-
-// CORS middleware with specific origin
-const corsOptions = {
-    origin: ['https://rajkoli145.github.io', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Accept'],
-    optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options('*', cors(corsOptions));
+app.use(cors());
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));

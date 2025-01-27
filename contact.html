@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm">
+                        <form id="contactForm" action="https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/contact" method="POST">
                             <div class="form-group">
                                 <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
@@ -98,13 +98,50 @@
             </div>
         </main>
     </div>
-    <script src="js/api.js"></script>
-    <script src="js/contact.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('contactForm');
-            if (form) {
-                form.addEventListener('submit', handleSubmit);
+        document.getElementById('contactForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            
+            try {
+                const formData = new FormData(form);
+                const formObject = {};
+                formData.forEach((value, key) => {
+                    formObject[key] = value;
+                });
+                
+                console.log('Sending form data to:', form.action);
+                console.log('Form data:', formObject);
+                
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formObject)
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Success:', result);
+                    alert('Message sent successfully!');
+                    form.reset();
+                } else {
+                    throw new Error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to send message. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
             }
         });
     </script>
