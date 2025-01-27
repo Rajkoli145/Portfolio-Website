@@ -99,7 +99,7 @@
         </main>
     </div>
     <script>
-        const API_URL = 'https://portfolio-website-il2dyi6ny-rajkoli145s-projects.vercel.app/api/contact';
+        const API_URL = 'https://portfolio-website.netlify.app/.netlify/functions/contact';
         
         document.getElementById('contactForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -127,6 +127,8 @@
                 });
                 
                 if (!response.ok) {
+                    const errorData = await response.text();
+                    console.error('Server error:', errorData);
                     throw new Error('Network response was not ok');
                 }
                 
