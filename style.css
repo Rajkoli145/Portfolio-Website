@@ -220,7 +220,7 @@ body {
 }
 
 .btn.primary-btn {
-    background-color: var(--primary-color);
+    background-color: blue;
     color: var(--bg-color);
     border: none;
     padding: 0.8rem 2rem;
