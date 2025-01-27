@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 // MongoDB Contact Schema
 const contactSchema = new mongoose.Schema({
@@ -12,19 +9,30 @@ const contactSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// Use mongoose.models to check if the model exists
-const Contact = mongoose.models.Contact || mongoose.model('Contact', contactSchema);
+// Initialize Contact model
+let Contact;
+try {
+    Contact = mongoose.model('Contact');
+} catch {
+    Contact = mongoose.model('Contact', contactSchema);
+}
 
 // Connect to MongoDB
 async function connectDB() {
-    if (mongoose.connections[0].readyState) return;
-    
-    if (!process.env.MONGODB_URI) {
-        throw new Error('MONGODB_URI is not defined in environment variables');
-    }
-
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        if (!process.env.MONGODB_URI) {
+            throw new Error('MONGODB_URI is missing');
+        }
+        
+        if (mongoose.connections[0].readyState) {
+            return;
+        }
+
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        
         console.log('Connected to MongoDB');
     } catch (error) {
         console.error('MongoDB connection error:', error);
@@ -33,35 +41,33 @@ async function connectDB() {
 }
 
 module.exports = async (req, res) => {
-    // Handle CORS preflight
-    if (req.method === 'OPTIONS') {
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.status(200).end();
-        return;
-    }
-
-    // Set CORS headers for actual request
+    // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+    // Handle preflight
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
+    // Only allow POST
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
     try {
+        // Connect to MongoDB first
+        await connectDB();
+
+        // Validate request body
         const { name, email, subject, message } = req.body;
         
         if (!name || !email || !subject || !message) {
-            return res.status(400).json({ 
-                message: 'All fields are required'
-            });
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
-        await connectDB();
-
+        // Create and save contact
         const contact = new Contact({
             name,
             email,
@@ -70,12 +76,17 @@ module.exports = async (req, res) => {
         });
 
         await contact.save();
-        res.status(200).json({ message: 'Message sent successfully!' });
+        console.log('Message saved:', { name, email, subject });
+        
+        return res.status(200).json({ 
+            success: true,
+            message: 'Message sent successfully!' 
+        });
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ 
-            message: 'Error sending message',
-            error: error.message 
+        console.error('Server error:', error);
+        return res.status(500).json({ 
+            success: false,
+            message: 'Failed to send message. Please try again.' 
         });
     }
 };

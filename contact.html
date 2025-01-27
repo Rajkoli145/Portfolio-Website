@@ -34,6 +34,55 @@
         .primary-btn:hover {
             background-color: #3e8e41;
         }
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .form-group.error input,
+        .form-group.error textarea {
+            border-color: #ff4444;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #00eeff;
+            color: #000;
+            font-weight: bold;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 238, 255, 0.3);
+        }
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #status-message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        #status-message.success {
+            background-color: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+        #status-message.error {
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+            border: 1px solid #ff0000;
+        }
     </style>
 </head>
 <body>
@@ -123,7 +172,8 @@
                                 <div class="line"></div>
                                 <div class="error-message" id="messageError"></div>
                             </div>
-                            <button type="submit" id="submit-button" class="btn primary-btn">Send Message</button>
+                            <button type="submit" id="submit-button" class="btn">Send Message</button>
+                            <div id="status-message"></div>
                         </form>
                     </div>
                 </div>
@@ -131,16 +181,26 @@
         </main>
     </div>
     <script>
-        const API_URL = 'https://portfolio-website-j2s8md5k6-rajkoli145s-projects.vercel.app/api/contact';
-        
+        const API_URL = 'https://portfolio-website-koul4pqw0-rajkoli145s-projects.vercel.app/api/contact';
         const contactForm = document.getElementById('contact-form');
         const submitButton = document.getElementById('submit-button');
+        const statusMessage = document.getElementById('status-message');
+
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = type;
+            statusMessage.style.display = 'block';
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
 
         function clearErrors() {
             const errorElements = document.querySelectorAll('.error-message');
             const formGroups = document.querySelectorAll('.form-group');
             errorElements.forEach(el => el.textContent = '');
             formGroups.forEach(group => group.classList.remove('error'));
+            statusMessage.style.display = 'none';
         }
 
         function showError(fieldName, message) {
@@ -163,6 +223,12 @@
                 message: document.getElementById('message').value.trim()
             };
 
+            // Validate form data
+            if (!formData.name) return showError('name', 'Name is required');
+            if (!formData.email) return showError('email', 'Email is required');
+            if (!formData.subject) return showError('subject', 'Subject is required');
+            if (!formData.message) return showError('message', 'Message is required');
+
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
 
@@ -172,20 +238,20 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData),
-                    mode: 'cors'
+                    body: JSON.stringify(formData)
                 });
 
+                const result = await response.json();
+
                 if (!response.ok) {
-                    throw new Error('Failed to send message');
+                    throw new Error(result.message || 'Failed to send message');
                 }
 
-                const result = await response.json();
-                alert('Message sent successfully!');
+                showStatus('Message sent successfully!', 'success');
                 contactForm.reset();
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to send message. Please try again.');
+                showStatus(error.message || 'Failed to send message. Please try again.', 'error');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Send Message';
