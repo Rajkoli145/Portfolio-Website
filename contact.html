@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm">
+                        <form id="contact-form">
                             <div class="form-group">
                                 <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
@@ -118,8 +118,11 @@
         </main>
     </div>
     <script>
-        const API_URL = '/api/contact';
-        const form = document.getElementById('contactForm');
+        const API_URL = window.location.hostname === 'localhost' 
+            ? '/api/contact'
+            : 'https://portfolio-website-ej7wgvgav-rajkoli145s-projects.vercel.app/api/contact';
+
+        const form = document.getElementById('contact-form');
         const submitButton = form.querySelector('button[type="submit"]');
 
         function clearErrors() {
@@ -141,8 +144,6 @@
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
 
             const formData = {
                 name: document.getElementById('name').value.trim(),
@@ -152,20 +153,32 @@
             };
 
             try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+
                 console.log('Sending request to:', API_URL);
                 console.log('Form data:', formData);
-                
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(formData)
                 });
 
                 console.log('Response status:', response.status);
-                const result = await response.json();
-                console.log('Response data:', result);
+                const responseText = await response.text();
+                console.log('Raw response:', responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    console.log('Parsed response:', result);
+                } catch (error) {
+                    console.error('Failed to parse response:', error);
+                    throw new Error('Invalid server response');
+                }
 
                 if (!response.ok) {
                     throw new Error(result.message || 'Failed to send message');

@@ -20,6 +20,7 @@ async function connectDB() {
     if (mongoose.connections[0].readyState) return;
     
     if (!process.env.MONGODB_URI) {
+        console.error('MONGODB_URI is not defined');
         throw new Error('MONGODB_URI is not defined in environment variables');
     }
 
@@ -32,8 +33,14 @@ async function connectDB() {
     }
 }
 
-module.exports = async function handler(req, res) {
-    // Set CORS headers
+module.exports = async (req, res) => {
+    console.log('Received request:', {
+        method: req.method,
+        headers: req.headers,
+        body: req.body
+    });
+
+    // Handle CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -47,14 +54,19 @@ module.exports = async function handler(req, res) {
 
     // Only allow POST method
     if (req.method !== 'POST') {
+        console.log('Method not allowed:', req.method);
         return res.status(405).json({ message: 'Method not allowed' });
     }
 
     try {
+        // Log the incoming request body
+        console.log('Request body:', req.body);
+
         // Validate request body
         const { name, email, subject, message } = req.body;
         
         if (!name || !email || !subject || !message) {
+            console.log('Missing required fields:', { name, email, subject, message });
             return res.status(400).json({ 
                 message: 'Missing required fields',
                 details: {
@@ -78,6 +90,7 @@ module.exports = async function handler(req, res) {
         });
 
         await contact.save();
+        console.log('Contact saved successfully:', contact);
 
         // Send success response
         res.status(200).json({ message: 'Message sent successfully!' });
