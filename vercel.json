@@ -9,14 +9,17 @@
     "routes": [
         {
             "src": "/test",
-            "dest": "/api/index.js"
+            "dest": "/api/index.js",
+            "methods": ["GET"]
         },
         {
             "src": "/api/(.*)",
-            "dest": "/api/index.js"
+            "dest": "/api/index.js",
+            "methods": ["GET", "POST", "OPTIONS"]
         }
     ],
     "env": {
         "NODE_ENV": "production"
-    }
+    },
+    "public": true
 }

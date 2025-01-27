@@ -9,11 +9,7 @@ const Contact = require('../models/Contact');
 const app = express();
 
 // Middleware
-app.use(cors({
-    origin: ['https://rajkoli145.github.io', 'http://localhost:3000'],
-    methods: ['GET', 'POST'],
-    credentials: true
-}));
+app.use(cors());  // Allow all origins for now
 app.use(express.json());
 
 // MongoDB connection
