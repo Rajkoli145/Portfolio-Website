@@ -99,7 +99,7 @@
         </main>
     </div>
     <script>
-        const API_URL = 'https://portfolio-website-lnj0l2kuj-rajkoli145s-projects.vercel.app/api/contact';
+        const FORM_ENDPOINT = "https://formspree.io/f/xleqbwkr";
         
         document.getElementById('contactForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -118,13 +118,12 @@
                 
                 console.log('Submitting form data:', formObject);
                 
-                const response = await fetch(API_URL, {
+                const response = await fetch(FORM_ENDPOINT, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify(formObject),
-                    mode: 'cors'
+                    body: formData
                 });
                 
                 if (!response.ok) {
@@ -133,9 +132,7 @@
                     throw new Error('Failed to send message');
                 }
                 
-                const result = await response.json();
-                console.log('Server response:', result);
-                
+                console.log('Server response:', response);
                 alert('Message sent successfully!');
                 form.reset();
             } catch (error) {
