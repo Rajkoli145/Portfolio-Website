@@ -100,8 +100,8 @@
     </div>
     <script>
         const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3000/api/messages'
-            : 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/messages';
+            ? 'http://localhost:3000/api/contact'
+            : 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/contact';
 
         const form = document.getElementById('contactForm');
         const submitButton = form.querySelector('button[type="submit"]');
@@ -122,19 +122,22 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify(data)
                 });
 
+                const result = await response.json();
+
                 if (!response.ok) {
-                    throw new Error('Failed to send message');
+                    throw new Error(result.message || 'Failed to send message');
                 }
 
                 alert('Message sent successfully!');
                 form.reset();
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to send message. Please try again.');
+                alert(error.message || 'Failed to send message. Please try again.');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = 'Send Message';
