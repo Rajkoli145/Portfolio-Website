@@ -21,7 +21,12 @@
         },
         {
             "src": "/api/(.*)",
-            "dest": "/server.js"
+            "dest": "/server.js",
+            "methods": ["GET", "POST", "OPTIONS"],
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+            }
         }
     ],
     "env": {
