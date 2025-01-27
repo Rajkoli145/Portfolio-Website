@@ -4,3 +4,4 @@ node_modules/
 .vscode/
 *.log
 Portfolio1/
+.vercel

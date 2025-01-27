@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/index.js",
+            "src": "server.js",
             "use": "@vercel/node"
         },
         {
@@ -17,13 +17,11 @@
         },
         {
             "src": "/test",
-            "dest": "/api/index.js",
-            "methods": ["GET"]
+            "dest": "/server.js"
         },
         {
             "src": "/api/(.*)",
-            "dest": "/api/index.js",
-            "methods": ["GET", "POST", "OPTIONS"]
+            "dest": "/server.js"
         }
     ],
     "env": {

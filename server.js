@@ -10,9 +10,16 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: ['https://rajkoli145.github.io', 'http://localhost:3000', 'https://portfolio-website-ebiia1tyb-rajkoli145s-projects.vercel.app'],
-    methods: ['GET', 'POST'],
-    credentials: true
+    origin: [
+        'https://rajkoli145.github.io',
+        'http://localhost:3000',
+        'http://localhost:5500',
+        'https://portfolio-website-ebiia1tyb-rajkoli145s-projects.vercel.app',
+        'https://portfolio-website-rajkoli145.vercel.app'
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Accept']
 }));
 app.use(express.json());
 
