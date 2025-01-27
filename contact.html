@@ -147,127 +147,34 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contact-form">
-                            <div class="form-group">
-                                <input type="text" id="name" name="name" required>
-                                <label for="name">Your Name</label>
-                                <div class="line"></div>
-                                <div class="error-message" id="nameError"></div>
+                        <form id="contactForm" action="https://formsubmit.co/koliraji911@gmail.com" method="POST">
+                            <!-- Honeypot -->
+                            <input type="text" name="_honey" style="display: none;">
+                            
+                            <!-- Disable Captcha -->
+                            <input type="hidden" name="_captcha" value="false">
+                            
+                            <!-- Success Page -->
+                            <input type="hidden" name="_next" value="https://rajkoli145.github.io/Portfolio-Website/thanks.html">
+
+                            <div class="input-box">
+                                <input type="text" name="name" placeholder="Your Name" required>
                             </div>
-                            <div class="form-group">
-                                <input type="email" id="email" name="email" required>
-                                <label for="email">Your Email</label>
-                                <div class="line"></div>
-                                <div class="error-message" id="emailError"></div>
+                            <div class="input-box">
+                                <input type="email" name="email" placeholder="Your Email" required>
                             </div>
-                            <div class="form-group">
-                                <input type="text" id="subject" name="subject" required>
-                                <label for="subject">Subject</label>
-                                <div class="line"></div>
-                                <div class="error-message" id="subjectError"></div>
+                            <div class="input-box">
+                                <input type="text" name="subject" placeholder="Subject" required>
                             </div>
-                            <div class="form-group">
-                                <textarea id="message" name="message" required></textarea>
-                                <label for="message">Your Message</label>
-                                <div class="line"></div>
-                                <div class="error-message" id="messageError"></div>
+                            <div class="input-box">
+                                <textarea name="message" placeholder="Your Message" required></textarea>
                             </div>
-                            <button type="submit" id="submit-button" class="btn">Send Message</button>
-                            <div id="status-message"></div>
+                            <button type="submit" class="btn">Send Message</button>
                         </form>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-    <script>
-        const API_URL = '/api/contact';
-        const contactForm = document.getElementById('contact-form');
-        const submitButton = document.getElementById('submit-button');
-        const statusMessage = document.getElementById('status-message');
-
-        function showStatus(message, type) {
-            console.log(`Showing ${type} message:`, message);
-            statusMessage.textContent = message;
-            statusMessage.className = type;
-            statusMessage.style.display = 'block';
-            
-            if (type === 'error') {
-                statusMessage.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
-                statusMessage.style.color = '#ff0000';
-                statusMessage.style.border = '1px solid #ff0000';
-            } else {
-                statusMessage.style.backgroundColor = 'rgba(0, 255, 0, 0.1)';
-                statusMessage.style.color = '#00ff00';
-                statusMessage.style.border = '1px solid #00ff00';
-            }
-        }
-
-        function clearErrors() {
-            const errorElements = document.querySelectorAll('.error-message');
-            const formGroups = document.querySelectorAll('.form-group');
-            errorElements.forEach(el => el.textContent = '');
-            formGroups.forEach(group => group.classList.remove('error'));
-            statusMessage.style.display = 'none';
-        }
-
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            clearErrors();
-
-            try {
-                const formData = {
-                    name: document.getElementById('name').value.trim(),
-                    email: document.getElementById('email').value.trim(),
-                    subject: document.getElementById('subject').value.trim(),
-                    message: document.getElementById('message').value.trim()
-                };
-
-                // Log form data
-                console.log('Submitting form data:', formData);
-
-                // Validate all fields
-                const missingFields = [];
-                if (!formData.name) missingFields.push('Name');
-                if (!formData.email) missingFields.push('Email');
-                if (!formData.subject) missingFields.push('Subject');
-                if (!formData.message) missingFields.push('Message');
-
-                if (missingFields.length > 0) {
-                    showStatus(`Please fill in: ${missingFields.join(', ')}`, 'error');
-                    return;
-                }
-
-                submitButton.disabled = true;
-                submitButton.textContent = 'Sending...';
-
-                console.log('Sending request to:', API_URL);
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                console.log('Response status:', response.status);
-                const result = await response.json();
-                console.log('Response data:', result);
-
-                if (!response.ok) {
-                    throw new Error(result.message || result.error || 'Failed to send message');
-                }
-
-                showStatus('Message sent successfully!', 'success');
-                contactForm.reset();
-            } catch (error) {
-                console.error('Form submission error:', error);
-                showStatus(error.message || 'Failed to send message. Please try again.', 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Send Message';
-            }
-        });
-    </script>
 </body>
 </html>

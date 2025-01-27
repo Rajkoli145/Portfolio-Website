@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You!</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .thank-you-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .thank-you-content {
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .thank-you-icon {
+            font-size: 5rem;
+            color: #00ffff;
+            margin-bottom: 2rem;
+        }
+
+        .thank-you-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #00ffff;
+        }
+
+        .thank-you-message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #00ffff;
+            color: #1f242d;
+            border-radius: 4rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .back-button:hover {
+            box-shadow: 0 0 1rem #00ffff;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Add some particles in the background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100vw);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <!-- Add 20 particles -->
+        <script>
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                document.querySelector('.particles').appendChild(particle);
+            }
+        </script>
+    </div>
+
+    <div class="thank-you-container">
+        <div class="thank-you-content">
+            <div class="thank-you-icon">✨</div>
+            <h1 class="thank-you-title">Thank You!</h1>
+            <p class="thank-you-message">
+                Your message has been successfully sent. I appreciate you taking the time to reach out and will get back to you as soon as possible!
+            </p>
+            <a href="index.html" class="back-button">Back to Homepage</a>
+        </div>
+    </div>
+</body>
+</html>
