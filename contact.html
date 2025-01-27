@@ -118,9 +118,7 @@
         </main>
     </div>
     <script>
-        const API_URL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3000/api/contact'
-            : 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app/api/contact';
+        const API_URL = '/api/contact';
 
         const form = document.getElementById('contactForm');
         const submitButton = form.querySelector('button[type="submit"]');

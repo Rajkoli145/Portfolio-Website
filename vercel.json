@@ -6,27 +6,37 @@
             "use": "@vercel/node"
         },
         {
-            "src": "admin/**",
+            "src": "*.html",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "*.css",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "*.js",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "images/*",
             "use": "@vercel/static"
         }
     ],
     "routes": [
         {
             "src": "/api/(.*)",
-            "dest": "/api/$1",
-            "methods": ["GET", "POST", "OPTIONS"],
-            "headers": {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Accept"
-            }
+            "dest": "/api/$1"
         },
         {
-            "src": "/admin(.*)",
-            "dest": "/admin/index.html"
+            "handle": "filesystem"
+        },
+        {
+            "src": "/",
+            "dest": "/index.html"
+        },
+        {
+            "src": "/(.+)",
+            "dest": "/$1"
         }
-    ],
-    "env": {
-        "NODE_ENV": "production"
-    }
+    ]
 }
