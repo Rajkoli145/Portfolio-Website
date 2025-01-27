@@ -187,6 +187,7 @@
         const statusMessage = document.getElementById('status-message');
 
         function showStatus(message, type) {
+            console.log(`Showing ${type} message:`, message);
             statusMessage.textContent = message;
             statusMessage.className = type;
             statusMessage.style.display = 'block';
@@ -200,10 +201,6 @@
                 statusMessage.style.color = '#00ff00';
                 statusMessage.style.border = '1px solid #00ff00';
             }
-
-            setTimeout(() => {
-                statusMessage.style.display = 'none';
-            }, 5000);
         }
 
         function clearErrors() {
@@ -226,14 +223,25 @@
                     message: document.getElementById('message').value.trim()
                 };
 
-                if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-                    showStatus('Please fill in all fields', 'error');
+                // Log form data
+                console.log('Submitting form data:', formData);
+
+                // Validate all fields
+                const missingFields = [];
+                if (!formData.name) missingFields.push('Name');
+                if (!formData.email) missingFields.push('Email');
+                if (!formData.subject) missingFields.push('Subject');
+                if (!formData.message) missingFields.push('Message');
+
+                if (missingFields.length > 0) {
+                    showStatus(`Please fill in: ${missingFields.join(', ')}`, 'error');
                     return;
                 }
 
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
 
+                console.log('Sending request to:', API_URL);
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
@@ -242,16 +250,18 @@
                     body: JSON.stringify(formData)
                 });
 
+                console.log('Response status:', response.status);
                 const result = await response.json();
+                console.log('Response data:', result);
 
                 if (!response.ok) {
-                    throw new Error(result.message || 'Failed to send message');
+                    throw new Error(result.message || result.error || 'Failed to send message');
                 }
 
                 showStatus('Message sent successfully!', 'success');
                 contactForm.reset();
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Form submission error:', error);
                 showStatus(error.message || 'Failed to send message. Please try again.', 'error');
             } finally {
                 submitButton.disabled = false;

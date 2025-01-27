@@ -1,110 +1,87 @@
 # Portfolio Website
 
-A modern, responsive personal portfolio website showcasing my work and skills, with a functional contact form.
+A personal portfolio website with a contact form feature that stores messages in MongoDB.
 
-## 🌟 Features
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
-- **Modern UI/UX**: Clean and professional design with smooth animations
-- **Interactive Components**: Dynamic navigation and hover effects
-- **Contact Form**: Fully functional contact form with backend integration
-- **Admin Panel**: Secure admin interface to manage messages
-- **Social Media Integration**: Direct links to professional profiles
+## Features
 
-## 🛠️ Technologies Used
-### Frontend
-- HTML5 & CSS3
-- JavaScript (ES6+)
-- Font Awesome 6.5.1 (for icons)
-- Google Fonts (Poppins)
+- Responsive design
+- Contact form with MongoDB integration
+- Server-side form validation
+- Error handling and user feedback
 
-### Backend
-- Node.js
-- Express.js
-- MongoDB (for message storage)
-- Mongoose (ODM)
+## Prerequisites
 
-### Deployment
-- Frontend: GitHub Pages
-- Backend: Render.com
-- Database: MongoDB Atlas
-
-## 🚀 Setup and Installation
-
-### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB
+- MongoDB Atlas account or local MongoDB installation
 - Git
 
-### Local Development
-1. Clone the repository
+## Setup
+
+1. Clone the repository:
 ```bash
 git clone https://github.com/Rajkoli145/Portfolio-Website.git
 cd Portfolio-Website
 ```
 
-2. Install dependencies
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Set up environment variables
-Create a `.env` file in the root directory:
+3. Create a `.env` file in the root directory:
 ```env
-MONGODB_URI=your_mongodb_atlas_connection_string
+MONGODB_URI=your_mongodb_connection_string
 PORT=3000
 ```
 
-4. Start MongoDB (if running locally)
+4. Start the development server:
 ```bash
-mongod --dbpath ~/data/db
+npm run dev
 ```
 
-5. Start the development server
-```bash
-npm start
-```
+The website will be available at `http://localhost:3000`.
 
-## 📝 Project Structure
+## Project Structure
+
 ```
 Portfolio-Website/
-├── assets/
-│   └── images/         # Image assets
-├── js/
-│   ├── contact.js      # Contact form handling
-│   └── script.js       # Main JavaScript file
-├── styles/
-│   └── style.css      # Main stylesheet
-├── admin/
-│   └── index.html     # Admin panel
-├── api/
-│   └── index.js       # Backend API
-├── models/
-│   └── Contact.js     # MongoDB schema
-└── *.html             # Main HTML pages
+├── assets/           # Static assets (images, etc.)
+├── api/             # API routes
+├── models/          # Database models
+├── public/          # Public static files
+├── *.html          # HTML pages
+├── style.css       # Main stylesheet
+├── script.js       # Client-side JavaScript
+├── server.js       # Express server
+├── package.json    # Project dependencies
+└── README.md       # Project documentation
 ```
 
-## 🌐 Deployment
+## Environment Variables
 
-### Backend Deployment (Render.com)
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Configure environment variables:
-   - `MONGODB_URI`: MongoDB Atlas connection string
-   - `PORT`: 3000
-4. Set build command: `npm install`
-5. Set start command: `node api/index.js`
+- `MONGODB_URI`: MongoDB connection string
+- `PORT`: Server port (default: 3000)
 
-### Frontend Deployment (GitHub Pages)
-The frontend is automatically deployed when changes are pushed to the main branch.
+## Development
 
-## 🔗 Live Demo
-- Frontend: [https://rajkoli145.github.io/Portfolio1](https://rajkoli145.github.io/Portfolio1)
-- Backend API: [https://portfolio-backend-s2ws.onrender.com](https://portfolio-backend-s2ws.onrender.com)
+Run the development server with auto-reload:
+```bash
+npm run dev
+```
 
-## 📞 Contact
-- GitHub: [@Rajkoli145](https://github.com/Rajkoli145)
-- LinkedIn: [Raj Koli](https://www.linkedin.com/in/raj-koli-626008318/)
-- Twitter: [@koli_raj57974](https://x.com/koli_raj57974)
+## Contact Form
 
-## 📄 License
-This project is open source and available under the [MIT License](LICENSE).
+The contact form saves messages to MongoDB with the following fields:
+- Name
+- Email
+- Subject
+- Message
+- Timestamp
+
+## License
+
+MIT License - feel free to use this code for your own portfolio!
+
+## Author
+
+Raj Koli
