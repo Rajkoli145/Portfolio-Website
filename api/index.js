@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 // Import Contact model
@@ -11,6 +12,7 @@ const app = express();
 // Middleware
 app.use(cors());  // Allow all origins for now
 app.use(express.json());
+app.use(express.static('admin'));  // Serve static files from admin directory
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -41,6 +43,11 @@ app.get('/test', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+// Serve admin dashboard
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '../admin/index.html'));
 });
 
 // Contact form submission route
