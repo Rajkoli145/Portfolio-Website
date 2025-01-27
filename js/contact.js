@@ -3,6 +3,8 @@ const API_URL = window.location.hostname.includes('github.io')
     ? 'https://portfolio-website-1m1nrgvrg-rajkoli145s-projects.vercel.app'  // Updated Vercel URL
     : 'http://localhost:3000';
 
+console.log('Current API URL:', API_URL);
+
 async function handleSubmit(event) {
     event.preventDefault();
     console.log('Form submission started');
@@ -19,6 +21,7 @@ async function handleSubmit(event) {
         formObject[key] = value;
     });
     
+    console.log('Sending form data to:', `${API_URL}/api/contact`);
     console.log('Form data:', formObject);
     
     try {
@@ -28,19 +31,29 @@ async function handleSubmit(event) {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(formObject)
+            body: JSON.stringify(formObject),
+            mode: 'cors'
         });
 
         console.log('Response status:', response.status);
+        console.log('Response headers:', [...response.headers.entries()]);
+        
+        const responseData = await response.text();
+        console.log('Raw response:', responseData);
         
         if (response.ok) {
-            const result = await response.json();
+            let result;
+            try {
+                result = JSON.parse(responseData);
+            } catch (e) {
+                console.warn('Could not parse response as JSON:', e);
+                result = { message: 'Message sent successfully!' };
+            }
             console.log('Response data:', result);
             alert('Message sent successfully!');
             form.reset();
         } else {
-            const errorText = await response.text();
-            console.error('Server error:', errorText);
+            console.error('Server error:', responseData);
             throw new Error('Failed to send message. Please try again.');
         }
     } catch (error) {
