@@ -1056,6 +1056,22 @@ section {
     transform: translateX(5px);
 }
 
+.contact-link.email-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.contact-link.email-link:hover {
+    background: rgba(0, 229, 255, 0.1);
+    transform: translateY(-2px);
+    text-shadow: 0 0 5px var(--primary-color);
+}
+
 /* Responsive adjustments for contact section */
 @media (max-width: 992px) {
     .contact-grid {
