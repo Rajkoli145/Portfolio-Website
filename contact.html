@@ -93,14 +93,19 @@
                             </div>
                             <button type="submit" class="btn primary-btn">Send Message</button>
                         </form>
-                        <script>
-                            document.getElementById('contactForm').addEventListener('submit', handleSubmit);
-                        </script>
                     </div>
                 </div>
             </div>
         </main>
     </div>
     <script src="js/contact.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contactForm');
+            if (form) {
+                form.addEventListener('submit', handleSubmit);
+            }
+        });
+    </script>
 </body>
 </html>
