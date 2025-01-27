@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("eLMcwEYAGCpTSAYZN");
+        })();
+    </script>
 </head>
 <body>
     <div class="home-container">
@@ -70,19 +76,19 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm" action="https://formspree.io/f/xleqbwkr" method="POST">
+                        <form id="contactForm">
                             <div class="form-group">
-                                <input type="text" id="name" name="name" required>
+                                <input type="text" id="name" name="from_name" required>
                                 <label for="name">Your Name</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="email" id="email" name="_replyto" required>
+                                <input type="email" id="email" name="reply_to" required>
                                 <label for="email">Your Email</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="text" id="subject" name="_subject" required>
+                                <input type="text" id="subject" name="subject" required>
                                 <label for="subject">Subject</label>
                                 <div class="line"></div>
                             </div>
@@ -91,7 +97,6 @@
                                 <label for="message">Your Message</label>
                                 <div class="line"></div>
                             </div>
-                            <input type="hidden" name="_next" value="https://rajkoli145.github.io/Portfolio-Website/contact.html">
                             <button type="submit" class="btn primary-btn">Send Message</button>
                         </form>
                     </div>
@@ -108,29 +113,19 @@
             submitButton.disabled = true;
             submitButton.textContent = 'Sending...';
             
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
+            emailjs.sendForm('service_qr1bnrm', 'template_w7tq0uc', form)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
                     alert('Message sent successfully!');
                     form.reset();
-                } else {
-                    throw new Error('Failed to send message');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to send message. Please try again.');
-            })
-            .finally(() => {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Send Message';
-            });
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Failed to send message. Please try again.');
+                })
+                .finally(function() {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Message';
+                });
         });
     </script>
 </body>
