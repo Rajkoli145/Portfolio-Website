@@ -181,7 +181,7 @@
         </main>
     </div>
     <script>
-        const API_URL = 'https://portfolio-website-bf9kv9cp9-rajkoli145s-projects.vercel.app/api/contact';
+        const API_URL = '/api/contact';
         const contactForm = document.getElementById('contact-form');
         const submitButton = document.getElementById('submit-button');
         const statusMessage = document.getElementById('status-message');
@@ -214,15 +214,6 @@
             statusMessage.style.display = 'none';
         }
 
-        function showError(fieldName, message) {
-            const errorElement = document.getElementById(`${fieldName}Error`);
-            const formGroup = document.getElementById(fieldName)?.closest('.form-group');
-            if (errorElement && formGroup) {
-                errorElement.textContent = message;
-                formGroup.classList.add('error');
-            }
-        }
-
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             clearErrors();
@@ -235,26 +226,8 @@
                     message: document.getElementById('message').value.trim()
                 };
 
-                // Validate form data
-                let hasError = false;
-                if (!formData.name) {
-                    showError('name', 'Name is required');
-                    hasError = true;
-                }
-                if (!formData.email) {
-                    showError('email', 'Email is required');
-                    hasError = true;
-                }
-                if (!formData.subject) {
-                    showError('subject', 'Subject is required');
-                    hasError = true;
-                }
-                if (!formData.message) {
-                    showError('message', 'Message is required');
-                    hasError = true;
-                }
-
-                if (hasError) {
+                if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+                    showStatus('Please fill in all fields', 'error');
                     return;
                 }
 
@@ -264,15 +237,14 @@
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(formData)
                 });
 
                 const result = await response.json();
 
-                if (!response.ok || !result.success) {
+                if (!response.ok) {
                     throw new Error(result.message || 'Failed to send message');
                 }
 
