@@ -70,29 +70,34 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm">
+                        <form id="contactForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfPaDX0-pc7T8B0G1Wgfko6zMweA7k71iFBi1xJ4-P4jS6JwA/formResponse" method="POST">
                             <div class="form-group">
-                                <input type="text" id="name" name="name" required>
+                                <input type="text" id="name" name="entry.1583927566" required>
                                 <label for="name">Your Name</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="email" id="email" name="email" required>
+                                <input type="email" id="email" name="entry.1583927567" required>
                                 <label for="email">Your Email</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <input type="text" id="subject" name="subject" required>
+                                <input type="text" id="subject" name="entry.1583927568" required>
                                 <label for="subject">Subject</label>
                                 <div class="line"></div>
                             </div>
                             <div class="form-group">
-                                <textarea id="message" name="message" required></textarea>
+                                <textarea id="message" name="entry.1583927569" required></textarea>
                                 <label for="message">Your Message</label>
                                 <div class="line"></div>
                             </div>
                             <button type="submit" class="btn primary-btn">Send Message</button>
                         </form>
+                        <p style="margin-top: 20px;">
+                            <a href="https://docs.google.com/spreadsheets/d/1uhTjD47zeJRMFL0RWrsQnIZ_TpI9NQFKkBnKUHpoSEw/edit" target="_blank" style="color: #00ffff;">
+                                View Messages
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -109,21 +114,10 @@
 
             try {
                 const formData = new FormData(form);
-                const data = {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    subject: formData.get('subject'),
-                    message: formData.get('message'),
-                    timestamp: new Date().toISOString()
-                };
-
-                const response = await fetch('https://script.google.com/macros/s/AKfycbxDxXTMEPVTBTNzMFBJLpDRhBZFPYzXnqGbVxWfcDlBBiYAFyRGBKRrLLEtLBLcQvTd/exec', {
+                const response = await fetch(form.action, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                    body: formData
                 });
 
                 alert('Message sent successfully!');
