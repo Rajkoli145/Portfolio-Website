@@ -4,111 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Messages</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .message-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .message-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .message-subject {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .message-content {
+            color: #333;
+            line-height: 1.5;
+        }
+        .message-email {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .message-email:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .no-messages {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <nav class="bg-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-xl font-bold text-gray-800">Portfolio Admin Dashboard</h1>
-                </div>
-                <div class="flex items-center">
-                    <button id="refreshBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center">
-                        <i class="fas fa-sync-alt mr-2"></i>
-                        Refresh
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div class="px-4 py-6 sm:px-0">
-            <div class="bg-white rounded-lg shadow">
-                <div class="p-6">
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Contact Messages</h2>
-                    <div id="messageCount" class="text-sm text-gray-600 mb-4"></div>
-                    <div id="messages" class="space-y-4">
-                        <!-- Messages will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+<body>
+    <div class="container">
+        <h1>Contact Form Messages</h1>
+        <div id="messages-container"></div>
+    </div>
 
     <script>
-        const API_URL = 'https://portfolio-website-eight-ivory.vercel.app';
-        
+        const API_URL = window.location.hostname.includes('github.io') 
+            ? 'https://portfolio-website-ag8d5c58p-rajkoli145s-projects.vercel.app'
+            : 'http://localhost:3000';
+
         async function fetchMessages() {
             try {
                 const response = await fetch(`${API_URL}/api/messages`);
                 const messages = await response.json();
-                
-                const messagesContainer = document.getElementById('messages');
-                const messageCount = document.getElementById('messageCount');
-                
-                // Update message count
-                messageCount.textContent = `${messages.length} message${messages.length !== 1 ? 's' : ''} received`;
-                
-                // Clear existing messages
-                messagesContainer.innerHTML = '';
-                
-                // Sort messages by date (newest first)
-                messages.sort((a, b) => new Date(b.date) - new Date(a.date));
-                
-                // Add messages to the container
-                messages.forEach(message => {
-                    const date = new Date(message.date).toLocaleString();
-                    const messageElement = document.createElement('div');
-                    messageElement.className = 'bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition duration-150';
-                    messageElement.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center">
-                                <i class="fas fa-user-circle text-gray-400 text-xl mr-2"></i>
-                                <h3 class="text-lg font-semibold text-gray-800">${message.name}</h3>
-                            </div>
-                            <span class="text-sm text-gray-500">${date}</span>
-                        </div>
-                        <div class="ml-8">
-                            <p class="text-gray-600 mb-2">${message.email}</p>
-                            <p class="text-gray-800 font-medium mb-2">${message.subject}</p>
-                            <p class="text-gray-700">${message.message}</p>
-                        </div>
-                    `;
-                    messagesContainer.appendChild(messageElement);
-                });
-                
-                if (messages.length === 0) {
-                    messagesContainer.innerHTML = `
-                        <div class="text-center py-8">
-                            <i class="fas fa-inbox text-gray-400 text-4xl mb-4"></i>
-                            <p class="text-gray-500">No messages received yet</p>
-                        </div>
-                    `;
-                }
+                displayMessages(messages);
             } catch (error) {
                 console.error('Error fetching messages:', error);
-                document.getElementById('messages').innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fas fa-exclamation-circle text-red-500 text-4xl mb-4"></i>
-                        <p class="text-red-500">Error loading messages. Please try again.</p>
+                document.getElementById('messages-container').innerHTML = `
+                    <div class="no-messages">
+                        <p>Error loading messages. Please try again later.</p>
                     </div>
                 `;
             }
         }
 
-        // Fetch messages on page load
+        function displayMessages(messages) {
+            const container = document.getElementById('messages-container');
+            
+            if (!messages || messages.length === 0) {
+                container.innerHTML = `
+                    <div class="no-messages">
+                        <p>No messages found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const messagesHTML = messages.map(message => `
+                <div class="message-card">
+                    <div class="message-header">
+                        <h3>${message.name}</h3>
+                        <span class="message-date">${new Date(message.createdAt).toLocaleString()}</span>
+                    </div>
+                    <a href="mailto:${message.email}" class="message-email">${message.email}</a>
+                    <div class="message-subject">${message.subject}</div>
+                    <div class="message-content">${message.message}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = messagesHTML;
+        }
+
+        // Fetch messages when page loads
         fetchMessages();
-
-        // Add refresh button functionality
-        document.getElementById('refreshBtn').addEventListener('click', () => {
-            fetchMessages();
-        });
-
-        // Auto-refresh every 30 seconds
-        setInterval(fetchMessages, 30000);
     </script>
 </body>
 </html>
