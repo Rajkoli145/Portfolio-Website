@@ -1,6 +1,6 @@
 // API URL based on environment
 const API_URL = window.location.hostname === 'rajkoli145.github.io'
-    ? 'https://portfolio-website-c5bfawwsu-rajkoli145s-projects.vercel.app'  // Production URL
+    ? 'https://portfolio-website-qq6xm66d5-rajkoli145s-projects.vercel.app'  // Production URL
     : window.location.hostname === 'localhost'
         ? 'http://localhost:3000'  // Local development
         : '';  // Default to same origin
