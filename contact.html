@@ -70,7 +70,7 @@
                         </div>
                     </div>
                     <div class="contact-form">
-                        <form id="contactForm" onsubmit="handleSubmit(event)">
+                        <form id="contactForm">
                             <div class="form-group">
                                 <input type="text" id="name" name="name" required>
                                 <label for="name">Your Name</label>
@@ -93,6 +93,9 @@
                             </div>
                             <button type="submit" class="btn primary-btn">Send Message</button>
                         </form>
+                        <script>
+                            document.getElementById('contactForm').addEventListener('submit', handleSubmit);
+                        </script>
                     </div>
                 </div>
             </div>
